@@ -1,0 +1,34 @@
+# Editor configuration, see https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.js]
+ij_javascript_use_semicolon_after_statement = false
+ij_javascript_spaces_within_imports = true
+ij_javascript_spaces_within_brackets = true
+ij_javascript_enforce_trailing_comma = whenmultiline
+
+[{*.ts, *.tsx}]
+ij_typescript_imports_wrap = split_into_lines
+ij_typescript_method_call_chain_wrap = normal
+ij_typescript_keep_simple_methods_in_one_line = true
+ij_typescript_keep_simple_blocks_in_one_line = true
+ij_typescript_spaces_within_imports = true
+ij_typescript_force_quote_style = true
+ij_typescript_use_double_quotes = false
+ij_typescript_force_semicolon_style = true
+ij_typescript_use_semicolon_after_statement = false
+ij_typescript_spaces_within_object_literal_braces = true
+ij_typescript_enforce_trailing_comma = whenmultiline
+ij_typescript_align_multiline_parameters = false
+ij_typescript_object_literal_wrap = normal
+
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false

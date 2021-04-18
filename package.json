@@ -1,0 +1,11 @@
+{
+  "name": "owl-schedule",
+  "version": "1.0.0",
+  "author": "Reeska <thchampi@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "app",
+    "api/functions"
+  ]
+}
