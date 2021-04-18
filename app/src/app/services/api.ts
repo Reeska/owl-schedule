@@ -1,7 +1,7 @@
 import type { Match as MatchApi, WeekSchedule as WeekScheduleApi } from 'owl-schedule-api'
 import type { Match, WeekSchedule } from '../../types'
 
-const API = 'http://localhost:5000'
+const API = import.meta.env.SNOWPACK_PUBLIC_API_URL
 
 export const getSchedule = async (week: number): Promise<WeekSchedule> => {
   return (await fetch(`${API}/schedule?week=${week}`)).json().then(mapSchedule)

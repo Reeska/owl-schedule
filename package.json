@@ -6,6 +6,11 @@
   "private": true,
   "workspaces": [
     "app",
-    "api/functions"
-  ]
+    "functions"
+  ],
+  "scripts": {
+    "deploy": "firebase deploy",
+    "deploy:app": "firebase deploy --only hosting",
+    "deploy:api": "firebase deploy --only functions"
+  }
 }
