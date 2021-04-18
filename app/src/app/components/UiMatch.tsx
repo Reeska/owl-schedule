@@ -33,14 +33,7 @@ const Status = styled.span<{ status: string }>`
   `};
 `
 
-const Score = styled.span`
-  padding: 3px;
-  border: 1px solid #26e826;
-  border-radius: 5px;
-  font-size: 11px;
-  color: #26e826;
-  margin-left: auto;
-`
+const Score = styled(Status)``
 
 export interface MatchProps extends Match {
   spoiler?: boolean;
@@ -59,8 +52,8 @@ const UiMatch = ({
     <MatchWrapper>
       <MatchDate>{date}</MatchDate>
       <strong>{title}</strong>
-      {status === 'CONCLUDED' && spoiler ? (
-        <Score>{`${scores[0]} - ${scores[1]}`}</Score>
+      {scores.length && spoiler ? (
+        <Score status={status}>{`${scores[0]} - ${scores[1]}`}</Score>
       ) : (
         <Status status={status}>{status}</Status>
       )}

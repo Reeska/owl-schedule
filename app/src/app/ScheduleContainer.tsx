@@ -5,7 +5,10 @@ import React, {
 import { getWeek } from 'date-fns'
 import styled from 'styled-components'
 
-import type { WeekSchedule } from '../types'
+import type {
+  WeekOptions,
+  WeekSchedule,
+} from '../types'
 
 import { getSchedule } from './services/api'
 import UiSpoiler from './components/UiSpoiler'
@@ -14,6 +17,7 @@ import UiNavigation from './components/UiNavigation'
 import { getQueryParam } from './services/utils'
 
 const OWL_STARTED_WEEK = 15
+const WEEK_START_ON_TUESDAY: WeekOptions = {weekStartsOn: 2}
 
 const WeekTitle = styled.h2`
   display: flex;
@@ -58,7 +62,7 @@ const ScheduleContainer = () => {
       return parseInt(week, 10)
     }
 
-    return getWeek(new Date()) - OWL_STARTED_WEEK
+    return getWeek(new Date(), WEEK_START_ON_TUESDAY) - OWL_STARTED_WEEK
   }
 
   const [ week, setWeek ] = useState(getSelectedWeek())
@@ -66,22 +70,17 @@ const ScheduleContainer = () => {
   const onPrevious = () => {
     const previousWeek = week - 1
     setWeek(previousWeek)
-    history.pushState({}, '', `/?week=${previousWeek}`)
   }
 
   const onNext = () => {
     const nextWeek = week + 1
     setWeek(nextWeek)
-    history.pushState({}, '', `/?week=${nextWeek}`)
   }
 
   useEffect(() => {
     loadSchedule()
+    history.pushState({}, '', `/?week=${week}`)
   }, [ week ])
-
-  useEffect(() => {
-    console.log('location changed', location)
-  }, [location])
 
   return (
     <ScheduleWrapper>
