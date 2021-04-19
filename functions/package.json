@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "ts-node-dev ./src/dev.ts",
     "build": "tsc",
-    "serve": "yarn run build && firebase emulators:start --only functions",
+    "serve": "yarn run build && firebase emulators:start --only functions"
   },
   "engines": {
     "node": "12"

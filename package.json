@@ -9,8 +9,12 @@
     "functions"
   ],
   "scripts": {
+    "predeploy": "firebase login",
     "deploy": "firebase deploy",
-    "deploy:app": "firebase deploy --only hosting",
-    "deploy:api": "firebase deploy --only functions"
+    "deploy:app": "yarn deploy --only hosting",
+    "deploy:api": "yarn deploy --only functions"
+  },
+  "dependencies": {
+    "firebase-tools": "latest"
   }
 }
