@@ -8,12 +8,11 @@ import UiMatch from './UiMatch'
 const MatchList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
   margin-bottom: 20px;
   background-color: #0000004d;
   padding: 17px;
   border-radius: 13px;
-  width: 750px;
 `
 
 export interface UiMatchGroupProps {
@@ -32,6 +31,7 @@ const UiMatchGroup = ({
     <div>
       {dates.map(date => (
         <MatchList key={date}>
+          <strong>{date}</strong>
           {group[date].map((match: Match) => (
             <UiMatch key={match.id} {...match} spoiler={spoiler}/>
           ))}

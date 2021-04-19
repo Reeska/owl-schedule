@@ -1,8 +1,10 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import type { Match } from '../../types'
 import { format } from 'date-fns'
 import frLocale from 'date-fns/locale/fr'
+
+import type { Match } from '../../types'
+import { breakpoint } from '../design/common'
 
 const STATUS_COLOR: Record<string, string> = {
   CONCLUDED: '#26e826',
@@ -14,18 +16,29 @@ const MatchWrapper = styled.div`
   display: flex;
   gap: 15px;
   align-items: center;
+  justify-content: space-between;
 `
 
-const MatchDate = styled.span`
-  width: 180px;
+const MatchTitle = styled.strong`
+  width: 65%;
+  text-align: center;
+
+  .mobile { display: inline; }
+  .desktop { display: none; }
+
+  @media screen and (min-width: ${breakpoint}px) {
+    .mobile { display: none; }
+    .desktop { display: inline; }
+  }
 `
+
+const MatchDate = styled.span``
 
 const Status = styled.span<{ status: string }>`
   padding: 3px;
   border: 1px solid;
   border-radius: 5px;
   font-size: 11px;
-  margin-left: auto;
 
   ${({ status }) => css`
     color: ${STATUS_COLOR[status]};
@@ -41,17 +54,21 @@ export interface MatchProps extends Match {
 
 const UiMatch = ({
   title,
+  shortTitle,
   status,
   scores,
   startDate,
   spoiler,
 }: MatchProps) => {
-  const date = format(startDate, 'EEE dd LLL, HH:mm', { locale: frLocale })
+  const date = format(startDate, 'HH:mm', { locale: frLocale })
 
   return (
     <MatchWrapper>
       <MatchDate>{date}</MatchDate>
-      <strong>{title}</strong>
+      <MatchTitle>
+        <span className="desktop">{title}</span>
+        <span className="mobile">{shortTitle}</span>
+      </MatchTitle>
       {scores.length && spoiler ? (
         <Score status={status}>{`${scores[0]} - ${scores[1]}`}</Score>
       ) : (

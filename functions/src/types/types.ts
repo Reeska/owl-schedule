@@ -6,6 +6,7 @@ export interface WeekSchedule {
 export interface Match {
   id: string;
   title: string;
+  shortTitle: string;
   status: string;
   startDate: string;
   scores: [number, number] | []

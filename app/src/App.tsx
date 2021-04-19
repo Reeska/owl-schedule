@@ -5,7 +5,7 @@ import ScheduleContainer from './app/ScheduleContainer'
 const App = () => {
   return (
     <div className="App">
-      <header className="App-header">
+      <header>
         <h1>Overwatch League Schedule</h1>
       </header>
       <main>

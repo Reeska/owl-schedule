@@ -13,7 +13,6 @@ const headers = {
 }
 
 export const getSchedule = async (week: number) => {
-  console.log('get schedule', week)
   return axios.get(SCHEDULE_API, {
     headers,
     params: {
@@ -30,8 +29,6 @@ export const getWeekSchedule = async (week: number): Promise<WeekSchedule> => {
   const tableData: ExternalWeekSchedule = response.data.content.tableData
   const matches = tableData.events[0].matches.filter(({ isEncore }) => !isEncore)
 
-  console.log('matches', matches.length)
-
   return {
     name: tableData.name,
     matches: matches.map(mapMatch)
@@ -40,9 +37,12 @@ export const getWeekSchedule = async (week: number): Promise<WeekSchedule> => {
 
 const mapMatch = (match: ExternalMatch): Match => {
   const title = match.competitors.map(team => team.name).join(' - ')
+  const shortTitle = match.competitors.map(team => team.abbreviatedName).join(' - ')
+
   return {
     id: match.id,
-    title: title,
+    title,
+    shortTitle,
     startDate: new Date(match.startDate).toISOString(),
     status: match.status,
     scores: match.scores,

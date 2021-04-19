@@ -12,6 +12,8 @@ export interface UiNavigationProps {
 }
 
 const Button = styled.button`
+  display: flex;
+  align-items: center;
   border: 1px solid #0000004d;
   background: #0000004d;
   padding: 5px 20px;

@@ -3,7 +3,8 @@ import React, {
   useState,
 } from 'react'
 import { getWeek } from 'date-fns'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import { Cached } from '@material-ui/icons'
 
 import type {
   WeekOptions,
@@ -15,29 +16,49 @@ import UiSpoiler from './components/UiSpoiler'
 import UiMatchGroup from './components/UiMatchGroup'
 import UiNavigation from './components/UiNavigation'
 import { getQueryParam } from './services/utils'
+import { breakpoint } from './design/common'
 
 const OWL_STARTED_WEEK = 15
-const WEEK_START_ON_TUESDAY: WeekOptions = {weekStartsOn: 2}
+const WEEK_START_ON_TUESDAY: WeekOptions = { weekStartsOn: 2 }
 
 const WeekTitle = styled.h2`
   display: flex;
-  justify-content: space-between;
 `
 
 const ScheduleWrapper = styled.div`
-  width: fit-content;
   margin: auto auto 100px;
+  width: calc(100% - 10px);
+
+  @media screen and (min-width: ${breakpoint}px) {
+    width: 700px;
+  }
 `
 
-const Refresh = styled.span`
+const Refresh = styled(Cached)<{ $loading: boolean }>`
   cursor: pointer;
-  content: 'toto;
+
+  ${({ $loading }) => $loading && css`
+    animation: Spinner infinite 1s linear;
+  `}
+
+  @keyframes Spinner {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`
+
+const Spoiler = styled(UiSpoiler)`
+  margin-left: auto;
 `
 
 const ScheduleContainer = () => {
-  const [ loading, setLoading ] = useState(false)
-  const [ schedule, setSchedule ] = useState<WeekSchedule | undefined>()
-  const [ spoiler, setSpoiler ] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [schedule, setSchedule] = useState<WeekSchedule | undefined>()
+  const [spoiler, setSpoiler] = useState(false)
 
   const loadSchedule = async () => {
     setLoading(true)
@@ -65,7 +86,7 @@ const ScheduleContainer = () => {
     return getWeek(new Date(), WEEK_START_ON_TUESDAY) - OWL_STARTED_WEEK
   }
 
-  const [ week, setWeek ] = useState(getSelectedWeek())
+  const [week, setWeek] = useState(getSelectedWeek())
 
   const onPrevious = () => {
     const previousWeek = week - 1
@@ -80,20 +101,21 @@ const ScheduleContainer = () => {
   useEffect(() => {
     loadSchedule()
     history.pushState({}, '', `/?week=${week}`)
-  }, [ week ])
+  }, [week])
 
   return (
     <ScheduleWrapper>
-      {loading && <progress/>}
-
       {!schedule ? (
-        <p>No data</p>
+        <>
+          {loading && <progress/>}
+          <p>No data</p>
+        </>
       ) : (
         <div>
           <WeekTitle>
             {schedule.name}
-            <Refresh onClick={loadSchedule}>🔄</Refresh>
-            <UiSpoiler show={spoiler} onChange={setSpoiler}/>
+            <Refresh onClick={loadSchedule} $loading={loading}/>
+            <Spoiler show={spoiler} onChange={setSpoiler}/>
           </WeekTitle>
 
           <UiMatchGroup matches={schedule.matches} spoiler={spoiler}/>

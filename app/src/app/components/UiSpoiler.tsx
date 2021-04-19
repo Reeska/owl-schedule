@@ -1,15 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-
-const Toggle = styled.input.attrs({
-  type: 'range',
-  min: 0,
-  max: 1,
-  step: 1,
-})`
-  width: 27px;
-  cursor: pointer;
-`
+import { Switch } from '@material-ui/core'
 
 const Spoiler = styled.div`
   display: flex;
@@ -21,20 +12,24 @@ const Spoiler = styled.div`
 export interface UiSpoilerProps {
   show: boolean;
   onChange: (show: boolean) => void;
+  className?: string;
 }
 
 const UiSpoiler = ({
   show = false,
   onChange,
+  className,
 }: UiSpoilerProps) => {
   return (
-    <Spoiler>
-      Show score
-      <Toggle
-        value={show ? 1 : 0}
-        onClick={() => onChange(!show)}
-        readOnly
-      />
+    <Spoiler className={className}>
+      <label>
+        Show score
+        <Switch
+          checked={show}
+          onChange={() => onChange(!show)}
+          color="primary"
+        />
+      </label>
     </Spoiler>
   )
 }

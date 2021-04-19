@@ -30,7 +30,16 @@ router.get('/schedule', async (ctx, next) => {
       message: 'Week param missing.',
     }
   } else {
-    ctx.body = await getWeekSchedule(parseInt(week, 10))
+    try {
+      ctx.body = await getWeekSchedule(parseInt(week, 10))
+    } catch(error) {
+      console.error('Error getting schedule', error)
+
+      ctx.response.status = 400
+      ctx.body = {
+        error: error.message
+      }
+    }
   }
 
   return next()
