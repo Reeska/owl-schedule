@@ -1,6 +1,7 @@
 {
   "name": "owl-schedule-app",
   "version": "1.0.0",
+  "license": "MIT",
   "scripts": {
     "start": "snowpack dev",
     "build": "snowpack build",

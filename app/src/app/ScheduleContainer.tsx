@@ -16,17 +16,21 @@ import UiSpoiler from './components/UiSpoiler'
 import UiMatchGroup from './components/UiMatchGroup'
 import UiNavigation from './components/UiNavigation'
 import { getQueryParam } from './services/utils'
-import { breakpoint } from './design/common'
+import {
+  breakpoint,
+  secondaryColor,
+} from './design/common'
 
 const OWL_STARTED_WEEK = 15
 const WEEK_START_ON_TUESDAY: WeekOptions = { weekStartsOn: 2 }
 
 const WeekTitle = styled.h2`
   display: flex;
+  align-items: center;
 `
 
 const ScheduleWrapper = styled.div`
-  margin: auto auto 100px;
+  margin: 0 auto;
   width: calc(100% - 10px);
 
   @media screen and (min-width: ${breakpoint}px) {
@@ -36,6 +40,8 @@ const ScheduleWrapper = styled.div`
 
 const Refresh = styled(Cached)<{ $loading: boolean }>`
   cursor: pointer;
+  margin-left: 12px;
+  color: ${secondaryColor};
 
   ${({ $loading }) => $loading && css`
     animation: Spinner infinite 1s linear;
@@ -100,7 +106,7 @@ const ScheduleContainer = () => {
 
   useEffect(() => {
     loadSchedule()
-    history.pushState({}, '', `/?week=${week}`)
+    history.pushState({}, ``, `/?week=${week}`)
   }, [week])
 
   return (

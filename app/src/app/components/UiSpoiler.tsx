@@ -1,12 +1,23 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Switch } from '@material-ui/core'
+import { secondaryColor } from '../design/common'
 
 const Spoiler = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: initial;
+`
+
+const StyledSwitch = styled(Switch)`
+  .MuiSwitch-colorPrimary.Mui-checked {
+    color: ${secondaryColor};
+
+    + .MuiSwitch-track {
+      background-color: ${secondaryColor};
+    }
+  }
 `
 
 export interface UiSpoilerProps {
@@ -24,7 +35,7 @@ const UiSpoiler = ({
     <Spoiler className={className}>
       <label>
         Show score
-        <Switch
+        <StyledSwitch
           checked={show}
           onChange={() => onChange(!show)}
           color="primary"
