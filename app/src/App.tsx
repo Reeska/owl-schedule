@@ -1,9 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
+import logo from '../public/owl.png'
 
-import './App.css'
 import ScheduleContainer from './app/ScheduleContainer'
 import { secondaryColor } from './app/design/common'
+
+const AppTemplate = styled.div`
+  height: 100%;
+`
+
+const Main = styled.main`
+  font-size: 20px;
+`
 
 const Title = styled.h1`
   text-transform: uppercase;
@@ -13,35 +21,54 @@ const Title = styled.h1`
   padding: 10px 50px;
   border-radius: 10px;
   font-weight: normal;
-  color: ${secondaryColor};
+  text-align: center;
 
-  span {
-    color: white;
-    font-weight: bold;
+  a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: ${secondaryColor};
+
+    img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    span:nth-of-type(1) {
+      color: white;
+      font-weight: bold;
+    }
   }
+
 `
 
 const Legal = styled.p`
   text-align: center;
-  margin-top: 50px;
-  margin-bottom: 50px;
+  padding: 50px 0;
 `
 
 const App = () => {
   return (
-    <div className="App">
+    <AppTemplate>
       <header>
         <Title>
-          <span>Overwatch League</span> Schedule
+          <a href="/">
+            <img src={logo} alt=""/>
+            <div>
+              <span>Overwatch League</span> Schedule
+            </div>
+          </a>
         </Title>
       </header>
-      <main>
+
+      <Main>
         <ScheduleContainer/>
-      </main>
+      </Main>
+
       <footer>
         <Legal>Overwatch &copy; {new Date().getFullYear()} Blizzard</Legal>
       </footer>
-    </div>
+    </AppTemplate>
   )
 }
 

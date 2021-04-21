@@ -5,17 +5,18 @@ import React, {
 import { getWeek } from 'date-fns'
 import styled, { css } from 'styled-components'
 import { Cached } from '@material-ui/icons'
+import { LinearProgress } from '@material-ui/core'
 
 import type {
   WeekOptions,
   WeekSchedule,
-} from '../types'
+} from '../../types/types'
 
 import { getSchedule } from './services/api'
 import UiSpoiler from './components/UiSpoiler'
 import UiMatchGroup from './components/UiMatchGroup'
 import UiNavigation from './components/UiNavigation'
-import { getQueryParam } from './services/utils'
+import { getQueryParam } from './services/match.utils'
 import {
   breakpoint,
   secondaryColor,
@@ -61,6 +62,16 @@ const Spoiler = styled(UiSpoiler)`
   margin-left: auto;
 `
 
+const LinearLoader = styled(LinearProgress)`
+  && {
+    background-color: transparent;
+  }
+
+  .MuiLinearProgress-bar {
+    background-color: ${secondaryColor};
+  }
+`
+
 const ScheduleContainer = () => {
   const [loading, setLoading] = useState(false)
   const [schedule, setSchedule] = useState<WeekSchedule | undefined>()
@@ -73,8 +84,6 @@ const ScheduleContainer = () => {
       const response = await getSchedule(week)
 
       setSchedule(response)
-
-      console.log('schedule', schedule)
     } catch (error) {
       console.error('ERROR', error)
     }
@@ -113,25 +122,30 @@ const ScheduleContainer = () => {
     <ScheduleWrapper>
       {!schedule ? (
         <>
-          {loading && <progress/>}
-          <p>No data</p>
+          {loading ? (
+            <LinearLoader/>
+          ) : (
+            <p>No data</p>
+          )}
         </>
       ) : (
-        <div>
-          <WeekTitle>
-            {schedule.name}
-            <Refresh onClick={loadSchedule} $loading={loading}/>
-            <Spoiler show={spoiler} onChange={setSpoiler}/>
-          </WeekTitle>
+        <>
+          <div>
+            <WeekTitle>
+              {schedule.name}
+              <Refresh onClick={loadSchedule} $loading={loading}/>
+              <Spoiler show={spoiler} onChange={setSpoiler}/>
+            </WeekTitle>
 
-          <UiMatchGroup matches={schedule.matches} spoiler={spoiler}/>
-        </div>
+            <UiMatchGroup matches={schedule.matches} spoiler={spoiler}/>
+          </div>
+
+          <UiNavigation
+            onPrevious={onPrevious}
+            onNext={onNext}
+          />
+        </>
       )}
-
-      <UiNavigation
-        onPrevious={onPrevious}
-        onNext={onNext}
-      />
     </ScheduleWrapper>
   )
 }

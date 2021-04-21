@@ -11,7 +11,7 @@ const Spoiler = styled.div`
 `
 
 const StyledSwitch = styled(Switch)`
-  .MuiSwitch-colorPrimary.Mui-checked {
+  .MuiSwitch-colorSecondary.Mui-checked {
     color: ${secondaryColor};
 
     + .MuiSwitch-track {
@@ -38,7 +38,7 @@ const UiSpoiler = ({
         <StyledSwitch
           checked={show}
           onChange={() => onChange(!show)}
-          color="primary"
+          color="secondary"
         />
       </label>
     </Spoiler>

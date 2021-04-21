@@ -1,8 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import type { Match } from '../../types'
-import { groupMatchByDate } from '../services/utils'
+import type { Match } from '../../../types/types'
+import { groupMatchByDate } from '../services/match.utils'
+
 import UiMatch from './UiMatch'
 
 const MatchList = styled.div`

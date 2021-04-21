@@ -1,10 +1,9 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { format } from 'date-fns'
-import frLocale from 'date-fns/locale/fr'
 
-import type { Match } from '../../types'
+import type { Match } from '../../../types/types'
 import { breakpoint } from '../design/common'
+import { format } from '../services/date.utils'
 
 const STATUS_COLOR: Record<string, string> = {
   CONCLUDED: '#26e826',
@@ -60,7 +59,7 @@ const UiMatch = ({
   startDate,
   spoiler,
 }: MatchProps) => {
-  const date = format(startDate, 'HH:mm', { locale: frLocale })
+  const date = format(startDate, 'p')
 
   return (
     <MatchWrapper>
