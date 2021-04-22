@@ -1,9 +1,13 @@
-import React from 'react'
+import React, {
+  Fragment,
+  useState,
+} from 'react'
 import styled, { css } from 'styled-components'
 
 import type { Match } from '../../../types/types'
 import { breakpoint } from '../design/common'
 import { format } from '../services/date.utils'
+import { Tooltip } from '@material-ui/core'
 
 const STATUS_COLOR: Record<string, string> = {
   CONCLUDED: '#26e826',
@@ -22,18 +26,33 @@ const MatchTitle = styled.strong`
   width: 65%;
   text-align: center;
 
-  .mobile { display: inline; }
-  .desktop { display: none; }
+  .mobile {
+    display: inline;
+  }
+
+  .desktop {
+    display: none;
+  }
 
   @media screen and (min-width: ${breakpoint}px) {
-    .mobile { display: none; }
-    .desktop { display: inline; }
+    .mobile {
+      display: none;
+    }
+
+    .desktop {
+      display: inline;
+    }
   }
 `
 
 const MatchDate = styled.span``
 
-const Status = styled.span<{ status: string }>`
+const MatchTooltip = styled(Tooltip).attrs({
+  title: 'Toggle score for this match',
+  arrow: true,
+})``
+
+const Status = styled.span<{ status: Match['status'] }>`
   padding: 3px;
   border: 1px solid;
   border-radius: 5px;
@@ -42,6 +61,13 @@ const Status = styled.span<{ status: string }>`
   ${({ status }) => css`
     color: ${STATUS_COLOR[status]};
     border-color: ${STATUS_COLOR[status]};
+  `};
+
+  ${({ status }) => status !== 'PENDING' && css`
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.18);
+    }
   `};
 `
 
@@ -59,20 +85,33 @@ const UiMatch = ({
   startDate,
   spoiler,
 }: MatchProps) => {
+  const [localSpoiler, setLocalSpoiler] = useState(false)
   const date = format(startDate, 'p')
+  const hasScore = scores.length
+  const showScore = hasScore && (spoiler || localSpoiler)
+
+  const toggleLocalSpoiler = () => (
+    hasScore && setLocalSpoiler(prevLocalSpoiler => !prevLocalSpoiler)
+  )
+
+  const ScoreWrapper = hasScore ? MatchTooltip : Fragment
 
   return (
     <MatchWrapper>
       <MatchDate>{date}</MatchDate>
+
       <MatchTitle>
         <span className="desktop">{title}</span>
         <span className="mobile">{shortTitle}</span>
       </MatchTitle>
-      {scores.length && spoiler ? (
-        <Score status={status}>{`${scores[0]} - ${scores[1]}`}</Score>
-      ) : (
-        <Status status={status}>{status}</Status>
-      )}
+
+      <ScoreWrapper>
+        {showScore ? (
+          <Score status={status} onClick={toggleLocalSpoiler}>{`${scores[0]} - ${scores[1]}`}</Score>
+        ) : (
+          <Status status={status} onClick={toggleLocalSpoiler}>{status}</Status>
+        )}
+      </ScoreWrapper>
     </MatchWrapper>
   )
 }

@@ -7,7 +7,9 @@ export interface Match {
   id: string;
   title: string;
   shortTitle: string;
-  status: string;
+  status: MatchStatus;
   startDate: string;
   scores: [number, number] | []
 }
+
+export type MatchStatus = 'PENDING' | 'IN_PROGRESS' | 'CONCLUDED'
