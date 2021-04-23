@@ -35,7 +35,7 @@ const ScheduleWrapper = styled.div`
   width: calc(100% - 10px);
 
   @media screen and (min-width: ${breakpoint}px) {
-    width: 700px;
+    max-width: 700px;
   }
 `
 
