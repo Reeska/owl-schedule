@@ -46,5 +46,6 @@ const mapMatch = (match: ExternalMatch): Match => {
     startDate: new Date(match.startDate).toISOString(),
     status: match.status,
     scores: match.scores,
+    teams: match.competitors,
   }
 }

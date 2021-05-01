@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components'
 import { Tooltip } from '@material-ui/core'
 
 import type { Match } from '../../../types/types'
-import { breakpoint } from '../design/common'
+import { onDesktop } from '../design/common'
 import { format } from '../services/date.utils'
 
 const STATUS_COLOR: Record<string, string> = {
@@ -19,29 +19,37 @@ const MatchWrapper = styled.div`
   display: flex;
   gap: 15px;
   align-items: center;
+  justify-content: space-between;
 `
 
 const MatchTitle = styled.strong`
+  > span {
+    align-items: center;
+    gap: 10px;
+  }
+
   .mobile {
-    display: inline;
+    display: flex;
   }
 
   .desktop {
     display: none;
   }
 
-  @media screen and (min-width: ${breakpoint}px) {
+  ${onDesktop(`
     .mobile {
       display: none;
     }
 
     .desktop {
-      display: inline;
+      display: flex;
     }
-  }
+  `)}
 `
 
-const MatchDate = styled.span``
+const MatchDate = styled.span`
+  width: 52px;
+`
 
 const MatchTooltip = styled(Tooltip).attrs({
   title: 'Toggle score for this match',
@@ -49,8 +57,6 @@ const MatchTooltip = styled(Tooltip).attrs({
 })``
 
 const Info = styled.span<{ status: Match['status'] }>`
-  margin-left: auto;
-
   ${({ status }) => css`
     color: ${STATUS_COLOR[status]};
     border-color: ${STATUS_COLOR[status]};
@@ -73,7 +79,12 @@ const Status = styled(Info)`
 
 const Score = styled(Info)`
   font-size: 18px;
-  margin-left: auto;
+`
+
+const Logo = styled.img`
+  width: 22px;
+  background-color: white;
+  border-radius: 50%;
 `
 
 export interface MatchProps extends Match {
@@ -87,9 +98,11 @@ const UiMatch = ({
   scores,
   startDate,
   spoiler,
+  teams,
 }: MatchProps) => {
   const [localSpoiler, setLocalSpoiler] = useState(false)
   const date = format(startDate, 'p')
+  const [logoA, logoB] = teams.map(team => team.logo)
   const hasScore = scores.length
   const showScore = hasScore && (spoiler || localSpoiler)
 
@@ -104,8 +117,14 @@ const UiMatch = ({
       <MatchDate>{date}</MatchDate>
 
       <MatchTitle>
-        <span className="desktop">{title}</span>
-        <span className="mobile">{shortTitle}</span>
+        <span className="desktop">
+          {title}
+        </span>
+        <span className="mobile">
+          <Logo src={logoA} />
+          {shortTitle}
+          <Logo src={logoB} />
+        </span>
       </MatchTitle>
 
       <ScoreWrapper>

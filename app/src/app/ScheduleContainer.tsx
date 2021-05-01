@@ -19,6 +19,7 @@ import UiNavigation from './components/UiNavigation'
 import { getQueryParam } from './services/match.utils'
 import {
   breakpoint,
+  onDesktop,
   secondaryColor,
 } from './design/common'
 
@@ -37,6 +38,10 @@ const ScheduleWrapper = styled.div`
   @media screen and (min-width: ${breakpoint}px) {
     max-width: 700px;
   }
+
+  ${onDesktop(`
+    max-width: 700px;
+  `)}
 `
 
 const Refresh = styled(Cached)<{ $loading: boolean }>`

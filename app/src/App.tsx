@@ -4,7 +4,10 @@ import logo from '../public/images/owl.png'
 import twitterLogo from '../public/images/twitter.png'
 
 import ScheduleContainer from './app/ScheduleContainer'
-import { secondaryColor } from './app/design/common'
+import {
+  onDesktop,
+  secondaryColor,
+} from './app/design/common'
 
 const AppTemplate = styled.div`
   height: 100%;
@@ -18,7 +21,7 @@ const Title = styled.h1`
   text-transform: uppercase;
   background: #464646;
   width: fit-content;
-  margin: 40px auto;
+  margin-top: 0;
   padding: 10px 50px;
   border-radius: 10px;
   font-weight: normal;
@@ -41,6 +44,9 @@ const Title = styled.h1`
     }
   }
 
+  ${onDesktop(`
+    margin: 40px auto;
+  `)}
 `
 
 const Author = styled.a`

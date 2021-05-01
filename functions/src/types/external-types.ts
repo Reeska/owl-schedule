@@ -1,3 +1,8 @@
+import {
+  MatchStatus,
+  Team,
+} from './common'
+
 export interface ExternalWeekSchedule {
   name: string;
   events: [ExternalEvent]
@@ -9,18 +14,10 @@ export interface ExternalEvent {
 
 export interface ExternalMatch {
   id: string;
-  status: string;
+  status: MatchStatus;
   startDate: string;
   endDate: string;
-  competitors: ExternalTeam[];
+  competitors: [Team, Team];
   scores: [number, number] | [];
   isEncore: boolean;
-}
-
-export interface ExternalTeam {
-  id: string;
-  name: string;
-  abbreviatedName: string;
-  icon: string;
-  logo: string;
 }
