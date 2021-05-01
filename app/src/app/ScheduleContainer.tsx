@@ -2,29 +2,24 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { getWeek } from 'date-fns'
 import styled, { css } from 'styled-components'
 import { Cached } from '@material-ui/icons'
 import { LinearProgress } from '@material-ui/core'
 
-import type {
-  WeekOptions,
-  WeekSchedule,
-} from '../../types/types'
+import type { WeekSchedule } from '../../types/types'
+import {
+  onDesktop,
+  secondaryColor,
+} from '../common/design/common'
 
 import { getSchedule } from './services/api'
+import {
+  getCurrentWeek,
+  getQueryParam,
+} from './services/match.utils'
 import UiSpoiler from './components/UiSpoiler'
 import UiMatchGroup from './components/UiMatchGroup'
 import UiNavigation from './components/UiNavigation'
-import { getQueryParam } from './services/match.utils'
-import {
-  breakpoint,
-  onDesktop,
-  secondaryColor,
-} from './design/common'
-
-const OWL_STARTED_WEEK = 15
-const WEEK_START_ON_TUESDAY: WeekOptions = { weekStartsOn: 2 }
 
 const WeekTitle = styled.h2`
   display: flex;
@@ -34,10 +29,6 @@ const WeekTitle = styled.h2`
 const ScheduleWrapper = styled.div`
   margin: 0 auto;
   width: calc(100% - 10px);
-
-  @media screen and (min-width: ${breakpoint}px) {
-    max-width: 700px;
-  }
 
   ${onDesktop(`
     max-width: 700px;
@@ -81,6 +72,7 @@ const ScheduleContainer = () => {
   const [loading, setLoading] = useState(false)
   const [schedule, setSchedule] = useState<WeekSchedule | undefined>()
   const [spoiler, setSpoiler] = useState(false)
+  const currentWeek = getCurrentWeek()
 
   const loadSchedule = async () => {
     setLoading(true)
@@ -99,28 +91,20 @@ const ScheduleContainer = () => {
   const getSelectedWeek = () => {
     const week = getQueryParam('week')
 
-    if (week) {
-      return parseInt(week, 10)
-    }
-
-    return getWeek(new Date(), WEEK_START_ON_TUESDAY) - OWL_STARTED_WEEK
+    return week ? parseInt(week, 10) : currentWeek
   }
 
-  const [week, setWeek] = useState(getSelectedWeek())
+  const [week, setWeek] = useState(getSelectedWeek)
 
-  const onPrevious = () => {
-    const previousWeek = week - 1
-    setWeek(previousWeek)
-  }
+  const onPrevious = () => setWeek(week - 1)
 
-  const onNext = () => {
-    const nextWeek = week + 1
-    setWeek(nextWeek)
-  }
+  const onNext = () => setWeek(week + 1)
 
   useEffect(() => {
+    const url = currentWeek === week ? '/' : `/?week=${week}`
+
+    history.pushState({}, ``, url)
     loadSchedule()
-    history.pushState({}, ``, `/?week=${week}`)
   }, [week])
 
   return (

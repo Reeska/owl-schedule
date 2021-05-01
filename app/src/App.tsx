@@ -7,7 +7,7 @@ import ScheduleContainer from './app/ScheduleContainer'
 import {
   onDesktop,
   secondaryColor,
-} from './app/design/common'
+} from './common/design/common'
 
 const AppTemplate = styled.div`
   height: 100%;
@@ -53,10 +53,11 @@ const Author = styled.a`
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 15px;
   text-decoration: none;
   color: #08abe6;
-  gap: 15px;
-  padding-top: 50px;
+  width: fit-content;
+  margin: 50px auto auto;
 
   img {
     height: 20px;

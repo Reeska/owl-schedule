@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Switch } from '@material-ui/core'
-import { secondaryColor } from '../design/common'
+import { secondaryColor } from '../../common/design/common'
 
 const Spoiler = styled.div`
   display: flex;

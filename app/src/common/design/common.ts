@@ -6,3 +6,9 @@ export const onDesktop = (style: string) => `
     ${style}
   }
 `
+
+export const onMobile = (style: string) => `
+  @media screen and (max-width: ${breakpoint - 1}px) {
+    ${style}
+  }
+`
