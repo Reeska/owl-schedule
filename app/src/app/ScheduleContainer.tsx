@@ -3,8 +3,14 @@ import React, {
   useState,
 } from 'react'
 import styled, { css } from 'styled-components'
-import { Cached } from '@material-ui/icons'
-import { LinearProgress } from '@material-ui/core'
+import {
+  Cached,
+  Error,
+} from '@material-ui/icons'
+import {
+  LinearProgress,
+  Tooltip,
+} from '@material-ui/core'
 
 import type { WeekSchedule } from '../../types/types'
 import {
@@ -20,10 +26,12 @@ import {
 import UiSpoiler from './components/UiSpoiler'
 import UiMatchGroup from './components/UiMatchGroup'
 import UiNavigation from './components/UiNavigation'
+import UiNoMatch from './components/UiNoMatch'
 
 const WeekTitle = styled.h2`
   display: flex;
   align-items: center;
+  gap: 12px;
 `
 
 const ScheduleWrapper = styled.div`
@@ -37,14 +45,11 @@ const ScheduleWrapper = styled.div`
 
 const Refresh = styled(Cached)<{ $loading: boolean }>`
   cursor: pointer;
-  margin-left: 12px;
   color: ${secondaryColor};
 
   ${({ $loading }) => $loading && css`
     animation: Spinner infinite 1s linear;
-  `}
-
-  @keyframes Spinner {
+  `} @keyframes Spinner {
     from {
       transform: rotate(0deg);
     }
@@ -52,6 +57,12 @@ const Refresh = styled(Cached)<{ $loading: boolean }>`
       transform: rotate(360deg);
     }
   }
+`
+
+const ErrorReport = styled(Error)`
+  color: #282d33;
+  background: ${secondaryColor};
+  border-radius: 50%;
 `
 
 const Spoiler = styled(UiSpoiler)`
@@ -69,13 +80,15 @@ const LinearLoader = styled(LinearProgress)`
 `
 
 const ScheduleContainer = () => {
-  const [loading, setLoading] = useState(false)
-  const [schedule, setSchedule] = useState<WeekSchedule | undefined>()
-  const [spoiler, setSpoiler] = useState(false)
+  const [ loading, setLoading ] = useState(false)
+  const [ schedule, setSchedule ] = useState<WeekSchedule | undefined>()
+  const [ spoiler, setSpoiler ] = useState(false)
+  const [ error, setError ] = useState(false)
   const currentWeek = getCurrentWeek()
 
   const loadSchedule = async () => {
     setLoading(true)
+    setError(false)
 
     try {
       const response = await getSchedule(week)
@@ -83,6 +96,7 @@ const ScheduleContainer = () => {
       setSchedule(response)
     } catch (error) {
       console.error('ERROR', error)
+      setError(true)
     }
 
     setLoading(false)
@@ -94,7 +108,7 @@ const ScheduleContainer = () => {
     return week ? parseInt(week, 10) : currentWeek
   }
 
-  const [week, setWeek] = useState(getSelectedWeek)
+  const [ week, setWeek ] = useState(getSelectedWeek)
 
   const onPrevious = () => setWeek(week - 1)
 
@@ -105,7 +119,7 @@ const ScheduleContainer = () => {
 
     history.pushState({}, ``, url)
     loadSchedule()
-  }, [week])
+  }, [ week ])
 
   return (
     <ScheduleWrapper>
@@ -122,11 +136,23 @@ const ScheduleContainer = () => {
           <div>
             <WeekTitle>
               {schedule.name}
+
               <Refresh onClick={loadSchedule} $loading={loading}/>
+
+              {error && (
+                <Tooltip title="Oops! An error occured." arrow>
+                  <ErrorReport/>
+                </Tooltip>
+              )}
+
               <Spoiler show={spoiler} onChange={setSpoiler}/>
             </WeekTitle>
 
-            <UiMatchGroup matches={schedule.matches} spoiler={spoiler}/>
+            {schedule.matches.length === 0 ? (
+              <UiNoMatch/>
+            ) : (
+              <UiMatchGroup matches={schedule.matches} spoiler={spoiler}/>
+            )}
           </div>
 
           <UiNavigation
