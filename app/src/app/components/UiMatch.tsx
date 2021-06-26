@@ -62,7 +62,7 @@ const MatchTooltip = styled(Tooltip).attrs({
   arrow: true,
 })``
 
-const Info = styled.span<{ status: Match['status'] }>`
+const Info = styled.span<{ status: Match['status'] | 'Masked' }>`
   width: 85px;
   text-align: center;
 
@@ -105,6 +105,7 @@ const Logo = styled.img`
 
 export interface MatchProps extends Match {
   spoiler?: boolean;
+  showStatus?: boolean;
 }
 
 const UiMatch = ({
@@ -114,6 +115,7 @@ const UiMatch = ({
   scores,
   startDate,
   spoiler,
+  showStatus,
   teams,
 }: MatchProps) => {
   const [ localSpoiler, setLocalSpoiler ] = useState(false)
@@ -143,13 +145,17 @@ const UiMatch = ({
         </span>
       </MatchTitle>
 
-      <ScoreWrapper>
-        {showScore ? (
-          <Score status={status} onClick={toggleLocalSpoiler}>{`${scores[0]} - ${scores[1]}`}</Score>
-        ) : (
-          <Status status={status} onClick={toggleLocalSpoiler}>{status}</Status>
-        )}
-      </ScoreWrapper>
+      {showStatus ? (
+        <ScoreWrapper>
+          {showScore ? (
+            <Score status={status} onClick={toggleLocalSpoiler}>{`${scores[0]} - ${scores[1]}`}</Score>
+          ) : (
+            <Status status={status} onClick={toggleLocalSpoiler}>{status}</Status>
+          )}
+        </ScoreWrapper>
+      ):(
+        <Status status="Masked">MASKED</Status>
+      )}
     </MatchWrapper>
   )
 }

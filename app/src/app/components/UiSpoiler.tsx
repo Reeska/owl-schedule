@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import styled from 'styled-components'
 import { Switch } from '@material-ui/core'
 import { secondaryColor } from '../../common/design/common'
@@ -24,17 +24,19 @@ export interface UiSpoilerProps {
   show: boolean;
   onChange: (show: boolean) => void;
   className?: string;
+  children?: ReactNode;
 }
 
 const UiSpoiler = ({
   show = false,
   onChange,
   className,
+  children,
 }: UiSpoilerProps) => {
   return (
     <Spoiler className={className}>
       <label>
-        Show score
+        {children}
         <StyledSwitch
           checked={show}
           onChange={() => onChange(!show)}

@@ -66,7 +66,7 @@ const ErrorReport = styled(Error)`
 `
 
 const Spoiler = styled(UiSpoiler)`
-  margin-left: auto;
+
 `
 
 const LinearLoader = styled(LinearProgress)`
@@ -79,10 +79,17 @@ const LinearLoader = styled(LinearProgress)`
   }
 `
 
+const Options = styled.div`
+  display: flex;
+  gap: 5px;
+  margin-left: auto;
+`
+
 const ScheduleContainer = () => {
   const [ loading, setLoading ] = useState(false)
   const [ schedule, setSchedule ] = useState<WeekSchedule | undefined>()
   const [ spoiler, setSpoiler ] = useState(false)
+  const [ showStatus, setShowStatus ] = useState(false)
   const [ error, setError ] = useState(false)
   const currentWeek = getCurrentWeek()
 
@@ -111,7 +118,6 @@ const ScheduleContainer = () => {
   const [ week, setWeek ] = useState(getSelectedWeek)
 
   const onPrevious = () => setWeek(week - 1)
-
   const onNext = () => setWeek(week + 1)
 
   useEffect(() => {
@@ -140,18 +146,30 @@ const ScheduleContainer = () => {
               <Refresh onClick={loadSchedule} $loading={loading}/>
 
               {error && (
-                <Tooltip title="Oops! An error occured." arrow>
+                <Tooltip title="Oops! An error occurred." arrow>
                   <ErrorReport/>
                 </Tooltip>
               )}
 
-              <Spoiler show={spoiler} onChange={setSpoiler}/>
+              <Options>
+                <Spoiler show={showStatus} onChange={setShowStatus}>
+                  Status
+                </Spoiler>
+
+                <Spoiler show={spoiler} onChange={setSpoiler}>
+                  Score
+                </Spoiler>
+              </Options>
             </WeekTitle>
 
             {schedule.matches.length === 0 ? (
               <UiNoMatch/>
             ) : (
-              <UiMatchGroup matches={schedule.matches} spoiler={spoiler}/>
+              <UiMatchGroup
+                matches={schedule.matches}
+                spoiler={spoiler}
+                showStatus={showStatus}
+              />
             )}
           </div>
 

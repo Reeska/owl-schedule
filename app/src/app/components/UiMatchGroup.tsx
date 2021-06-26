@@ -19,11 +19,13 @@ const MatchList = styled.div`
 export interface UiMatchGroupProps {
   matches: Match[];
   spoiler?: boolean;
+  showStatus?: boolean;
 }
 
 const UiMatchGroup = ({
   matches,
   spoiler = false,
+  showStatus = false,
 }: UiMatchGroupProps) => {
   const group = groupMatchByDate(matches)
   const dates = Object.keys(group)
@@ -34,7 +36,12 @@ const UiMatchGroup = ({
         <MatchList key={date}>
           <strong>{date}</strong>
           {group[date].map((match: Match) => (
-            <UiMatch key={match.id} {...match} spoiler={spoiler}/>
+            <UiMatch
+              key={match.id}
+              {...match}
+              spoiler={spoiler}
+              showStatus={showStatus}
+            />
           ))}
         </MatchList>
       ))}
