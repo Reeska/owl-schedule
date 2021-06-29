@@ -19,12 +19,6 @@ export const groupMatchByDate = (matches: Match[]): Record<string, Match[]> => {
   }, {})
 }
 
-export const getQueryParam = (
-  paramName: string,
-): null | string => {
-  return new URLSearchParams(location.search).get(paramName)
-}
-
 const OWL_STARTED_WEEK = 15
 const WEEK_START_ON_TUESDAY: WeekOptions = { weekStartsOn: 2 }
 

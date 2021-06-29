@@ -11,22 +11,19 @@ import {
   LinearProgress,
   Tooltip,
 } from '@material-ui/core'
+import { useSwipeable, SwipeEventData } from 'react-swipeable'
 
-import type { WeekSchedule } from '../../types/types'
 import {
   onDesktop,
   secondaryColor,
 } from '../common/design/common'
-
-import { getSchedule } from './services/api'
-import {
-  getCurrentWeek,
-  getQueryParam,
-} from './services/match.utils'
 import UiSpoiler from './components/UiSpoiler'
 import UiMatchGroup from './components/UiMatchGroup'
 import UiNavigation from './components/UiNavigation'
 import UiNoMatch from './components/UiNoMatch'
+import { useSchedule } from './services/api'
+import { getCurrentWeek } from './utils/match.utils'
+import { getQueryParamInteger } from './utils/url.utils'
 
 const WeekTitle = styled.h2`
   display: flex;
@@ -34,9 +31,11 @@ const WeekTitle = styled.h2`
   gap: 12px;
 `
 
-const ScheduleWrapper = styled.div`
+const ScheduleWrapper = styled.div<{ swipeMargin?: number }>`
+  position: relative;
   margin: 0 auto;
   width: calc(100% - 10px);
+  left: ${({ swipeMargin }) => swipeMargin ?? 0}px;
 
   ${onDesktop(`
     max-width: 700px;
@@ -65,10 +64,6 @@ const ErrorReport = styled(Error)`
   border-radius: 50%;
 `
 
-const Spoiler = styled(UiSpoiler)`
-
-`
-
 const LinearLoader = styled(LinearProgress)`
   && {
     background-color: transparent;
@@ -85,53 +80,45 @@ const Options = styled.div`
   margin-left: auto;
 `
 
+const WeekSchedule = styled.div``
+
 const ScheduleContainer = () => {
-  const [ loading, setLoading ] = useState(false)
-  const [ schedule, setSchedule ] = useState<WeekSchedule | undefined>()
+  const currentWeek = getCurrentWeek()
   const [ spoiler, setSpoiler ] = useState(false)
   const [ showStatus, setShowStatus ] = useState(false)
-  const [ error, setError ] = useState(false)
-  const currentWeek = getCurrentWeek()
-
-  const loadSchedule = async () => {
-    setLoading(true)
-    setError(false)
-
-    try {
-      const response = await getSchedule(week)
-
-      setSchedule(response)
-    } catch (error) {
-      console.error('ERROR', error)
-      setError(true)
-    }
-
-    setLoading(false)
-  }
-
-  const getSelectedWeek = () => {
-    const week = getQueryParam('week')
-
-    return week ? parseInt(week, 10) : currentWeek
-  }
-
-  const [ week, setWeek ] = useState(getSelectedWeek)
+  const [ week, setWeek ] = useState(getQueryParamInteger('week') ?? currentWeek)
+  const { data, isFetching, refetch, error } = useSchedule(week)
+  const [ swipeMargin, setSwipeMargin ] = useState<number | undefined>(undefined)
 
   const onPrevious = () => setWeek(week - 1)
   const onNext = () => setWeek(week + 1)
+
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: onNext,
+    onSwipedRight: onPrevious,
+    onSwipeStart: ({ dir, deltaX }: SwipeEventData) => {
+      if (dir === 'Left' || dir === 'Right') {
+        setSwipeMargin(deltaX)
+      }
+    },
+    onSwiped: () => {
+      setSwipeMargin(undefined)
+    },
+    trackMouse: true,
+    rotationAngle: 10,
+  })
 
   useEffect(() => {
     const url = currentWeek === week ? '/' : `/?week=${week}`
 
     history.pushState({}, ``, url)
-    loadSchedule()
   }, [ week ])
 
   return (
-    <ScheduleWrapper>
-      {!schedule ? (
+    <ScheduleWrapper {...swipeHandlers} swipeMargin={swipeMargin}>
+      {!data ? (
         <>
-          {loading ? (
+          {isFetching ? (
             <LinearLoader/>
           ) : (
             <p>No data</p>
@@ -139,11 +126,11 @@ const ScheduleContainer = () => {
         </>
       ) : (
         <>
-          <div>
+          <WeekSchedule>
             <WeekTitle>
-              {schedule.name}
+              {data.name}
 
-              <Refresh onClick={loadSchedule} $loading={loading}/>
+              <Refresh onClick={() => refetch()} $loading={isFetching}/>
 
               {error && (
                 <Tooltip title="Oops! An error occurred." arrow>
@@ -152,26 +139,26 @@ const ScheduleContainer = () => {
               )}
 
               <Options>
-                <Spoiler show={showStatus} onChange={setShowStatus}>
+                <UiSpoiler show={showStatus} onChange={setShowStatus}>
                   Status
-                </Spoiler>
+                </UiSpoiler>
 
-                <Spoiler show={spoiler} onChange={setSpoiler}>
+                <UiSpoiler show={spoiler} onChange={setSpoiler}>
                   Score
-                </Spoiler>
+                </UiSpoiler>
               </Options>
             </WeekTitle>
 
-            {schedule.matches.length === 0 ? (
+            {data.matches.length === 0 ? (
               <UiNoMatch/>
             ) : (
               <UiMatchGroup
-                matches={schedule.matches}
+                matches={data.matches}
                 spoiler={spoiler}
                 showStatus={showStatus}
               />
             )}
-          </div>
+          </WeekSchedule>
 
           <UiNavigation
             onPrevious={onPrevious}

@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import type { Match } from '../../../types/types'
-import { groupMatchByDate } from '../services/match.utils'
+import { groupMatchByDate } from '../utils/match.utils'
 
 import UiMatch from './UiMatch'
 

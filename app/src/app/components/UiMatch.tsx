@@ -10,7 +10,7 @@ import {
   onDesktop,
   onMobile,
 } from '../../common/design/common'
-import { format } from '../services/date.utils'
+import { format } from '../utils/date.utils'
 
 const STATUS_COLOR: Record<string, string> = {
   CONCLUDED: '#26e826',
