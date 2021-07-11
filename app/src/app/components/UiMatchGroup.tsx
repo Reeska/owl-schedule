@@ -11,7 +11,9 @@ const MatchList = styled.div`
   flex-direction: column;
   gap: 20px;
   margin-bottom: 20px;
-  background-color: #0000004d;
+  // background-color: #0000004d;
+  background-color: #fff;
+  color: #282c34;
   padding: 17px;
   border-radius: 13px;
 `

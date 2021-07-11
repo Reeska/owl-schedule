@@ -11,7 +11,7 @@ import {
   LinearProgress,
   Tooltip,
 } from '@material-ui/core'
-import { useSwipeable, SwipeEventData } from 'react-swipeable'
+import { useSwipeable } from 'react-swipeable'
 
 import {
   onDesktop,
@@ -32,7 +32,6 @@ const WeekTitle = styled.h2`
 `
 
 const ScheduleWrapper = styled.div<{ swipeMargin?: number }>`
-  position: relative;
   margin: 0 auto;
   width: calc(100% - 10px);
   left: ${({ swipeMargin }) => swipeMargin ?? 0}px;
@@ -80,7 +79,7 @@ const Options = styled.div`
   margin-left: auto;
 `
 
-const WeekSchedule = styled.div``
+const WeekSchedule = styled.div<{ swipeMargin?: number }>``
 
 const ScheduleContainer = () => {
   const currentWeek = getCurrentWeek()
@@ -88,7 +87,6 @@ const ScheduleContainer = () => {
   const [ showStatus, setShowStatus ] = useState(false)
   const [ week, setWeek ] = useState(getQueryParamInteger('week') ?? currentWeek)
   const { data, isFetching, refetch, error } = useSchedule(week)
-  const [ swipeMargin, setSwipeMargin ] = useState<number | undefined>(undefined)
 
   const onPrevious = () => setWeek(week - 1)
   const onNext = () => setWeek(week + 1)
@@ -96,16 +94,8 @@ const ScheduleContainer = () => {
   const swipeHandlers = useSwipeable({
     onSwipedLeft: onNext,
     onSwipedRight: onPrevious,
-    onSwipeStart: ({ dir, deltaX }: SwipeEventData) => {
-      if (dir === 'Left' || dir === 'Right') {
-        setSwipeMargin(deltaX)
-      }
-    },
-    onSwiped: () => {
-      setSwipeMargin(undefined)
-    },
     trackMouse: true,
-    rotationAngle: 10,
+    rotationAngle: 30,
   })
 
   useEffect(() => {
@@ -115,7 +105,7 @@ const ScheduleContainer = () => {
   }, [ week ])
 
   return (
-    <ScheduleWrapper {...swipeHandlers} swipeMargin={swipeMargin}>
+    <ScheduleWrapper {...swipeHandlers}>
       {!data ? (
         <>
           {isFetching ? (

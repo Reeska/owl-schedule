@@ -28,7 +28,9 @@ const MatchWrapper = styled.div`
   `)}
 `
 
-const MatchTitle = styled.strong`
+const MatchTitle = styled.span`
+  flex: 1;
+
   > span {
     align-items: center;
     gap: 10px;
@@ -36,6 +38,7 @@ const MatchTitle = styled.strong`
 
   .mobile {
     display: flex;
+    justify-content: center;
   }
 
   .desktop {
@@ -100,8 +103,37 @@ const Score = styled(Info)`
 const Logo = styled.img`
   width: 22px;
   background-color: white;
-  border-radius: 50%;
+  border-radius: 8px;
 `
+
+const Team = styled.span`
+  flex: 1;
+
+  &:first-child {
+    text-align: right;
+  }
+`
+
+const TeamName = ({ name }: { name: string }) => {
+  const parts = name.match(/^([\w ]+) (\w+)/)
+
+  if (!parts) {
+    return (
+      <Team>
+        {name}
+      </Team>
+    )
+  }
+
+  const [ , city, teamName ] = parts
+
+  return (
+    <Team>
+      {city}
+      <strong> {teamName}</strong>
+    </Team>
+  )
+}
 
 export interface MatchProps extends Match {
   spoiler?: boolean;
@@ -123,6 +155,7 @@ const UiMatch = ({
   const [ logoA, logoB ] = teams.map(team => team.logo)
   const hasScore = scores.length
   const showScore = hasScore && (spoiler || localSpoiler)
+  const [ teamA, teamB ] = title.split('-')
 
   const toggleLocalSpoiler = () => (
     hasScore && setLocalSpoiler(prevLocalSpoiler => !prevLocalSpoiler)
@@ -136,7 +169,9 @@ const UiMatch = ({
 
       <MatchTitle>
         <span className="desktop">
-          {title}
+          <TeamName name={teamA}/>
+          <span>-</span>
+          <TeamName name={teamB}/>
         </span>
         <span className="mobile">
           <Logo src={logoA}/>
@@ -153,7 +188,7 @@ const UiMatch = ({
             <Status status={status} onClick={toggleLocalSpoiler}>{status}</Status>
           )}
         </ScoreWrapper>
-      ):(
+      ) : (
         <Status status="Masked">MASKED</Status>
       )}
     </MatchWrapper>
